@@ -3,7 +3,7 @@
 echo "🚀 Starting LiveTV Services..."
 
 echo "📦 Starting Docker containers..."
-docker-compose up -d
+docker-compose up -d --build
 
 echo "⏳ Waiting for services to start..."
 sleep 30

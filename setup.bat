@@ -21,11 +21,10 @@ echo ✅ Setup complete!
 echo.
 echo 📋 Next steps:
 echo 1. Edit .env file with your configuration
-echo 2. Run: docker-compose up -d
+echo 2. Run: docker-compose up -d --build
 echo 3. Wait for services to start (about 2-3 minutes)
-echo 4. Run: python create_admin.py (to create default admin user)
-echo 5. Open http://localhost in your browser
-echo 6. Login with admin/admin123
+echo 4. Open http://localhost in your browser
+echo 5. Login with admin/admin123
 echo.
 echo 🎬 Add your media files to the .\media directory
 echo 📺 Add M3U playlists to .\config\playlists\

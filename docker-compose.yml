@@ -28,7 +28,7 @@ services:
   # Backend API
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: livetv_backend
     environment:

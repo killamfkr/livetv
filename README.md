@@ -57,15 +57,9 @@ A modern, Docker-based media server alternative to Plex with comprehensive live 
    # Edit .env with your configuration
    ```
 
-2. **Build and start services**
+2. **Start the services**
    ```bash
-   # Build the images locally
-   ./build-local.sh  # Linux/macOS
-   # or
-   build-local.bat   # Windows
-   
-   # Start the services
-   docker-compose -f docker-compose.build.yml up -d
+   docker-compose up -d --build
    ```
 
 3. **Access the application**
