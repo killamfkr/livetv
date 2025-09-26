@@ -1,0 +1,6 @@
+# This file ensures the media directory is tracked by git
+# Place your media files in the appropriate subdirectories:
+# - movies/
+# - tv-shows/
+# - music/
+# - live-tv/
