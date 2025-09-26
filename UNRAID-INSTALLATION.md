@@ -11,63 +11,45 @@ This guide will help you install LiveTV on your Unraid server using the Communit
 
 ## 🚀 Installation Methods
 
-### Method 1: Community Applications (Easiest)
+### Method 1: Docker Compose Installation (Recommended)
 
-1. **Install Community Applications** (if not already installed):
-   - Go to Apps → Install Community Applications
-   - Follow the installation instructions
-
-2. **Add LiveTV repository**:
-   - Go to Apps → Community Applications
-   - Click the "Settings" icon (gear)
-   - Add this repository URL: `https://github.com/killamfkr/livetv`
-   - Click "Save"
-
-3. **Install LiveTV**:
-   - Search for "LiveTV" in Community Applications
-   - Click "Install"
-   - Configure your paths and settings
-   - Click "Apply"
-
-### Method 2: Manual Template Installation
-
-1. **Download the template**:
+1. **SSH into your Unraid server**
+2. **Download and run the installation script**:
    ```bash
-   wget https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-template.xml
+   wget https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-docker-compose-install.sh
+   chmod +x unraid-docker-compose-install.sh
+   ./unraid-docker-compose-install.sh
+   ```
+3. **Start LiveTV**:
+   ```bash
+   cd /mnt/user/appdata/livetv
+   ./start-livetv.sh
+   ```
+4. **Access at**: `http://your-unraid-ip`
+
+### Method 2: Manual Docker Compose
+
+1. **SSH into your Unraid server**
+2. **Create appdata directory**:
+   ```bash
+   mkdir -p /mnt/user/appdata/livetv
+   cd /mnt/user/appdata/livetv
+   ```
+3. **Clone the repository**:
+   ```bash
+   git clone https://github.com/killamfkr/livetv.git .
+   ```
+4. **Start the services**:
+   ```bash
+   docker-compose up -d --build
    ```
 
-2. **Add to Unraid**:
-   - Go to Docker → Add Container
-   - Click "Add" and select "From XML"
-   - Upload the `unraid-template.xml` file
+### Method 3: Community Applications (Advanced)
 
-3. **Configure the container**:
-   - Set your media directory path
-   - Set your config directory path
-   - Set your database directory path
-   - Configure ports (default: 80, 443)
-   - Set JWT secret (change from default!)
+1. **Install Community Applications** (if not already installed)
+2. **Use the simple template** for basic setup
+3. **Follow Docker Compose method** for full functionality
 
-4. **Start the container**
-
-### Method 3: Docker Compose (Advanced)
-
-1. **Download the compose file**:
-   ```bash
-   wget https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-docker-compose.yml
-   ```
-
-2. **Run the setup script**:
-   ```bash
-   wget https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-setup.sh
-   chmod +x unraid-setup.sh
-   ./unraid-setup.sh
-   ```
-
-3. **Start the services**:
-   ```bash
-   docker-compose -f unraid-docker-compose.yml up -d
-   ```
 
 ## ⚙️ Configuration
 

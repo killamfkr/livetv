@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>LiveTV</Name>
+  <Repository>livetv:latest</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <MyIP>192.168.1.100</MyIP>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/killamfkr/livetv/issues</Support>
+  <Project>https://github.com/killamfkr/livetv</Project>
+  <Overview>LiveTV - A modern Plex alternative with live TV support. Use the Docker Compose installation method for best results.</Overview>
+  <Category>Media Server:Other</Category>
+  <WebUI>http://[IP]:[PORT:80]/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-icon.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>1640995200</DateInstalled>
+  <DateUpdated>1640995200</DateUpdated>
+  <DonateText/>
+  <DonateLink/>
+  <Description>LiveTV is a modern media server alternative to Plex with comprehensive live TV support.
+
+⚠️ IMPORTANT: This template requires manual setup. For the best experience, use the Docker Compose installation method:
+
+1. SSH into your Unraid server
+2. Run: wget https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-docker-compose-install.sh
+3. Run: chmod +x unraid-docker-compose-install.sh
+4. Run: ./unraid-docker-compose-install.sh
+
+This will install LiveTV with all dependencies and proper configuration.
+
+Features:
+- Complete media library management
+- Live TV streaming with M3U and Xtream Codes support
+- Modern React web interface
+- FastAPI backend with PostgreSQL database
+- Redis caching for performance
+- Nginx reverse proxy
+- JWT authentication
+- Role-based access control
+- Docker containerized deployment
+- Mobile responsive design
+
+Perfect for users who want a Plex alternative with live TV capabilities!</Description>
+  <Networking>
+    <Mode>bridge</Mode>
+    <PublishList>
+      <Port>
+        <HostPort>80</HostPort>
+        <ContainerPort>80</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+      <Port>
+        <HostPort>443</HostPort>
+        <ContainerPort>443</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </PublishList>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/appdata/livetv/media</HostDir>
+      <ContainerDir>/media</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/appdata/livetv/config</HostDir>
+      <ContainerDir>/app/config</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/appdata/livetv/database</HostDir>
+      <ContainerDir>/var/lib/postgresql/data</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+  </Data>
+  <Environment>
+    <Variable>
+      <Value>postgresql://livetv:livetv_password@localhost:5432/livetv</Value>
+      <Mode/>
+      <Name>DATABASE_URL</Name>
+      <Description>Database connection URL</Description>
+    </Variable>
+    <Variable>
+      <Value>redis://localhost:6379</Value>
+      <Mode/>
+      <Name>REDIS_URL</Name>
+      <Description>Redis cache URL</Description>
+    </Variable>
+    <Variable>
+      <Value>your_super_secret_jwt_key_change_this_in_production</Value>
+      <Mode/>
+      <Name>JWT_SECRET</Name>
+      <Description>JWT secret key for authentication</Description>
+    </Variable>
+    <Variable>
+      <Value>30</Value>
+      <Mode/>
+      <Name>ACCESS_TOKEN_EXPIRE_MINUTES</Name>
+      <Description>JWT token expiration time in minutes</Description>
+    </Variable>
+    <Variable>
+      <Value>/media</Value>
+      <Mode/>
+      <Name>MEDIA_PATH</Name>
+      <Description>Path to media files</Description>
+    </Variable>
+  </Environment>
+  <Config Name="Media Directory" Target="/media" Default="/mnt/user/appdata/livetv/media" Mode="rw" Description="Directory containing your media files (movies, tv-shows, music)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/livetv/media</Config>
+  <Config Name="Config Directory" Target="/app/config" Default="/mnt/user/appdata/livetv/config" Mode="rw" Description="Directory for configuration files and M3U playlists" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/livetv/config</Config>
+  <Config Name="Database Directory" Target="/var/lib/postgresql/data" Default="/mnt/user/appdata/livetv/database" Mode="rw" Description="PostgreSQL database storage directory" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/livetv/database</Config>
+  <Config Name="Web Port" Target="80" Default="80" Mode="tcp" Description="Web interface port" Type="Port" Display="always" Required="true" Mask="false">80</Config>
+  <Config Name="HTTPS Port" Target="443" Default="443" Mode="tcp" Description="HTTPS port for secure connections" Type="Port" Display="always" Required="true" Mask="false">443</Config>
+  <Config Name="JWT Secret" Target="JWT_SECRET" Default="your_super_secret_jwt_key_change_this_in_production" Mode="" Description="Secret key for JWT authentication (change this!)" Type="Variable" Display="always" Required="true" Mask="true">your_super_secret_jwt_key_change_this_in_production</Config>
+  <Config Name="Database Password" Target="POSTGRES_PASSWORD" Default="livetv_password" Mode="" Description="PostgreSQL database password" Type="Variable" Display="always" Required="true" Mask="true">livetv_password</Config>
+</Container>
