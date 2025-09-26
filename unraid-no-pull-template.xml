@@ -3,19 +3,13 @@
   <Name>LiveTV</Name>
   <Repository>livetv:latest</Repository>
   <Registry/>
-  <BuildArgs>
-    <BuildArg>
-      <Name>BUILD_FROM_SOURCE</Name>
-      <Value>true</Value>
-    </BuildArg>
-  </BuildArgs>
   <Network>bridge</Network>
   <MyIP>192.168.1.100</MyIP>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
   <Support>https://github.com/killamfkr/livetv/issues</Support>
   <Project>https://github.com/killamfkr/livetv</Project>
-  <Overview>LiveTV - A modern Plex alternative with live TV support through M3U playlists and Xtream Codes API. Features media library management, live TV streaming, user authentication, and a beautiful web interface.</Overview>
+  <Overview>LiveTV - A modern Plex alternative with live TV support. Use the Docker Compose installation method for best results.</Overview>
   <Category>Media Server:Other</Category>
   <WebUI>http://[IP]:[PORT:80]/</WebUI>
   <TemplateURL/>
@@ -27,18 +21,16 @@
   <DateUpdated>1640995200</DateUpdated>
   <DonateText/>
   <DonateLink/>
-  <Description>LiveTV is a modern media server alternative to Plex with comprehensive live TV support. It features:
+  <Description>LiveTV is a modern media server alternative to Plex with comprehensive live TV support.
 
-🎬 Media Library Management - Organize and stream your movies and TV shows
-📺 Live TV Support - M3U playlist and Xtream Codes integration  
-🔍 Smart Search - Find content quickly with advanced search and filtering
-📱 Responsive Web Interface - Modern UI that works on desktop, tablet, and mobile
-🔐 User Management - Multi-user support with role-based access control
-🚀 Docker Ready - Easy deployment with Docker Compose
-⚡ Fast Streaming - Optimized for smooth playback with range request support
-🎨 Modern UI - Beautiful, intuitive interface with dark theme
-📊 EPG Support - Electronic Program Guide for live TV channels
-🔄 Auto-refresh - Automatic playlist updates and channel refresh
+⚠️ IMPORTANT: This template requires manual setup. For the best experience, use the Docker Compose installation method:
+
+1. SSH into your Unraid server
+2. Run: wget https://raw.githubusercontent.com/killamfkr/livetv/main/unraid-fix-install.sh
+3. Run: chmod +x unraid-fix-install.sh
+4. Run: ./unraid-fix-install.sh
+
+This will install LiveTV with all dependencies and proper configuration.
 
 Features:
 - Complete media library management
