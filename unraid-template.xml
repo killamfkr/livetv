@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>LiveTV</Name>
-  <Repository>killamfkr/livetv:latest</Repository>
-  <Registry>https://hub.docker.com/r/killamfkr/livetv</Registry>
+  <Repository>livetv:latest</Repository>
+  <Registry/>
   <Network>bridge</Network>
   <MyIP>192.168.1.100</MyIP>
   <Shell>bash</Shell>

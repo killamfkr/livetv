@@ -51,23 +51,24 @@ A modern, Docker-based media server alternative to Plex with comprehensive live 
 ### Manual Setup
 1. **Clone and configure**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/killamfkr/livetv.git
    cd livetv
    cp env.example .env
    # Edit .env with your configuration
    ```
 
-2. **Start services**
+2. **Build and start services**
    ```bash
-   docker-compose up -d
+   # Build the images locally
+   ./build-local.sh  # Linux/macOS
+   # or
+   build-local.bat   # Windows
+   
+   # Start the services
+   docker-compose -f docker-compose.build.yml up -d
    ```
 
-3. **Create admin user**
-   ```bash
-   python3 create_admin.py
-   ```
-
-4. **Access the application**
+3. **Access the application**
    - Open `http://localhost` in your browser
    - Login with: `admin` / `admin123`
 

@@ -1,0 +1,110 @@
+# Multi-stage build for LiveTV
+FROM node:18-alpine AS frontend-builder
+
+WORKDIR /app
+COPY frontend/package*.json ./
+RUN npm ci --only=production
+COPY frontend/ .
+RUN npm run build
+
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    postgresql-client \
+    redis-tools \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy backend requirements and install
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend code
+COPY backend/ .
+
+# Copy built frontend
+COPY --from=frontend-builder /app/build ./static
+
+# Create necessary directories
+RUN mkdir -p /media /app/config/playlists /app/logs
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+echo "🚀 Starting LiveTV..."\n\
+\n\
+# Wait for database to be ready\n\
+echo "⏳ Waiting for database..."\n\
+while ! pg_isready -h postgres -p 5432 -U livetv; do\n\
+  echo "Database not ready, waiting..."\n\
+  sleep 2\n\
+done\n\
+\n\
+# Wait for Redis to be ready\n\
+echo "⏳ Waiting for Redis..."\n\
+while ! redis-cli -h redis -p 6379 ping; do\n\
+  echo "Redis not ready, waiting..."\n\
+  sleep 2\n\
+done\n\
+\n\
+# Run database migrations\n\
+echo "📊 Running database migrations..."\n\
+alembic upgrade head\n\
+\n\
+# Create default admin user if it doesn\'t exist\n\
+echo "👤 Creating default admin user..."\n\
+python -c "\n\
+import sys\n\
+sys.path.append(\'.\')\n\
+from sqlalchemy import create_engine\n\
+from sqlalchemy.orm import sessionmaker\n\
+from passlib.context import CryptContext\n\
+from models import User\n\
+from config import settings\n\
+\n\
+engine = create_engine(settings.database_url)\n\
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)\n\
+pwd_context = CryptContext(schemes=[\'bcrypt\'], deprecated=\'auto\')\n\
+\n\
+db = SessionLocal()\n\
+try:\n\
+    existing_admin = db.query(User).filter(User.username == \'admin\').first()\n\
+    if not existing_admin:\n\
+        hashed_password = pwd_context.hash(\'admin123\')\n\
+        admin_user = User(\n\
+            username=\'admin\',\n\
+            email=\'admin@livetv.local\',\n\
+            hashed_password=hashed_password,\n\
+            is_admin=True,\n\
+            is_active=True\n\
+        )\n\
+        db.add(admin_user)\n\
+        db.commit()\n\
+        print(\'✅ Admin user created successfully!\')\n\
+    else:\n\
+        print(\'ℹ️  Admin user already exists\')\n\
+except Exception as e:\n\
+    print(f\'❌ Error creating admin user: {e}\')\n\
+finally:\n\
+    db.close()\n\
+"\n\
+\n\
+# Start the application\n\
+echo "🎬 Starting LiveTV application..."\n\
+exec uvicorn main:app --host 0.0.0.0 --port 8000\n\
+' > /app/start.sh
+
+RUN chmod +x /app/start.sh
+
+# Expose ports
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Use the startup script
+CMD ["/app/start.sh"]
