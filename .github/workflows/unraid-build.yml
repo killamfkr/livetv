@@ -1,0 +1,69 @@
+name: Build Unraid Docker Image
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'unraid-template.xml'
+      - 'Dockerfile.unraid'
+      - 'unraid-docker-compose.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'unraid-template.xml'
+      - 'Dockerfile.unraid'
+      - 'unraid-docker-compose.yml'
+
+jobs:
+  build-unraid-image:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        
+    - name: Build and push Unraid image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./Dockerfile.unraid
+        push: true
+        tags: |
+          killamfkr/livetv:unraid
+          killamfkr/livetv:unraid-${{ github.sha }}
+          killamfkr/livetv:unraid-latest
+        platforms: linux/amd64,linux/arm64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: Update Unraid template
+      run: |
+        echo "📝 Updating Unraid template with latest image..."
+        # The template will reference the latest image tag
+        
+    - name: Create release assets
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "📦 Creating Unraid release assets..."
+        mkdir -p unraid-release
+        cp unraid-template.xml unraid-release/
+        cp unraid-docker-compose.yml unraid-release/
+        cp README-UNRAID.md unraid-release/
+        cp unraid-setup.sh unraid-release/
+        tar -czf unraid-release.tar.gz unraid-release/
+        
+    - name: Upload Unraid release assets
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v3
+      with:
+        name: unraid-release
+        path: unraid-release.tar.gz
